@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TODO App</title>
+  </head>
+  <script>
+    function deleteTask(id) {
+      fetch("http://localhost:3000/todo/" + id, { method: "DELETE" }).then(
+        (res) => {
+          if (res.status == 200) {
+            document.getElementById(id).remove()         
+          }
+        }
+      );
+    }
+
+    function gettodo() {
+      fetch("http://localhost:3000/todo/", { method: "GET" }).then((res) => {
+        res.json().then((data) => {
+          console.log(data);
+          var mainList = document.getElementById("mainArea");
+          mainList.innerHTML = "";
+          for (i = 0; i < data.length; i++) {
+            var itemElement = document.createElement("div");
+            itemElement.id= data[i].id;
+            var itemTitle = document.createElement("span");
+            var itemDesc = document.createElement("span");
+            var itemDelete = document.createElement("button");
+            itemElement.innerHTML = data[i].task;
+            itemDesc.innerHTML = data[i].details;
+            itemDelete.innerHTML = "Remove";
+            itemDelete.id = data[i].id;
+            itemDelete.setAttribute(
+              "onclick",
+              "deleteTask(" + data[i].id + ")"
+            );
+            itemElement.appendChild(itemTitle);
+            itemElement.appendChild(document.createElement("br"));
+            itemElement.appendChild(itemDesc);
+            itemElement.appendChild(document.createElement("br"));
+            itemElement.appendChild(itemDelete);
+            itemElement.appendChild(document.createElement("br"));
+            itemElement.appendChild(document.createElement("br"));
+            mainList.appendChild(itemElement);
+          }
+        });
+      });
+    }
+    gettodo();
+    function onpress() {
+      var title = document.getElementById("task").value;
+      var desc = document.getElementById("desc").value;
+      fetch("http://localhost:3000/todo/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          task: title,
+          details: desc,
+        }),
+      }).then((resp) => {
+        resp.json().then((data) => {
+          console.log(data);
+          var mainList = document.getElementById("mainArea");
+
+          var itemElement = document.createElement("div");
+          itemElement.id= data.id;
+          var itemTitle = document.createElement("span");
+          var itemDesc = document.createElement("span");
+          var itemDelete = document.createElement("button");
+          itemElement.innerHTML = data.task;
+          itemDesc.innerHTML = data.details;
+          itemDelete.innerHTML = "Remove";
+          itemDelete.id = data.id;
+          itemDelete.setAttribute("onclick", "deleteTask(" + data.id + ")");
+          itemElement.appendChild(itemTitle);
+          itemElement.appendChild(document.createElement("br"));
+          itemElement.appendChild(itemDesc);
+          itemElement.appendChild(document.createElement("br"));
+          itemElement.appendChild(itemDelete);
+          itemElement.appendChild(document.createElement("br"));
+          itemElement.appendChild(document.createElement("br"));
+          mainList.appendChild(itemElement);
+        });
+      });
+    }
+  </script>
+  <body>
+    <h1>TODO App</h1>
+
+    <label for="input1">Task:</label>
+    <input type="text" id="task" name="task" />
+    <br />
+    <br />
+    <label for="input2">Task Descreption:</label>
+    <input type="text" id="desc" name="desc" />
+    <br />
+
+    <button onclick="onpress()">Submit</button>
+    <br />
+    <br />
+    <button onclick="gettodo()">GetTodo</button>
+    <br />
+    <br />
+    <div id="mainArea"></div>
+  </body>
+</html>

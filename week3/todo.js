@@ -17,11 +17,12 @@ app.get("/todo", (req, res) => {
 });
 
 app.post("/todo", (req, res) => {
+  console.log("in post");
   task = req.body;
+  console.log(task);
   task["id"] = Math.floor(Math.random() * 10000000);
   var todoArr = [];
   fs.readFile("todo.json", "utf8", (err, data) => {
-    console.log("data before " + JSON.parse(data));
     if (err) throw err;
     else {
       console.log("parsed json data " + JSON.parse(data));
@@ -42,14 +43,42 @@ app.post("/todo", (req, res) => {
 
 app.delete("/todo/:id", (req, res) => {
   console.log(req.params.id);
-  var indexToRemove = todoArr.findIndex((item) => item.id == req.params.id);
-  console.log(indexToRemove);
-  if (indexToRemove < 0) {
-    todoArr.splice(indexToRemove, 1);
-    res.send(req.params.id + " Removed");
-  } else res.send(400, "Invalid ID");
+  var todoArr = [];
+  fs.readFile("todo.json", "utf8", (err, data) => {
+    console.log("id for deleteion: " + req.params.id);
+    if (err) throw err;
+    else {
+      //   console.log(JSON.parse(data));
+      todoArr = JSON.parse(data);
+      //   console.log(todoArr);
+      //   console.log(todoArr.length);
+      //   console.log(JSON.stringify(todoArr));
+      var indexToRemove = todoArr.findIndex((item) => item.id == req.params.id);
+      console.log("indexto remove " + indexToRemove);
+      if (indexToRemove > 0) {
+        console.log(todoArr.splice(indexToRemove, 1));
+        fs.writeFile("todo.json", JSON.stringify(todoArr), (err) => {
+          if (err == null) {
+            console.log("Todo updated in fs");
+            todoArr = [];
+          } else {
+            console.log(err);
+          }
+        });
+        res.send(req.params.id + " Removed");
+      } else res.send(400, "Invalid ID");
+    }
+  });
 });
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
+//for all other routes send 404
+app.use((req, res, next) => {
+  res.status(404).send("path not found");
+});
 app.listen(port, () => {
   console.log("listening at " + port);
 });
