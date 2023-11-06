@@ -17,6 +17,12 @@ function App() {
     },
   ]);
 
+
+  //React useeffect can be used to call the initial values from the backend- will execute only once and hence the code inside is gaurded from reexecution in case of rerenders
+  React.useEffect(()=>{
+    //fetch the inicial values
+  },[])
+
   return (
     <>
       {todo.map((task) => {
