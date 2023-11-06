@@ -1,44 +1,38 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import React from "react";
 
-function App() {
-  const [todo, setTodo] = useState([
-    {
-      title: "chant",
-      desc: "complete 16 rounds",
-      id: 1,
-    },
-    {
-      title: "read",
-      desc: "read BG",
-      id: 2,
-    },
-  ]);
 
+
+
+ function App() {
+  const [todos, setTodos] = React.useState([]);
 
   //React useeffect can be used to call the initial values from the backend- will execute only once and hence the code inside is gaurded from reexecution in case of rerenders
-  React.useEffect(()=>{
-    //fetch the inicial values
-  },[])
+  React.useEffect(() => {
+    //fetch the inicial todo values from the server
+    fetch("http://localhost:3000/todo/", { 
+      method: "GET" 
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        setTodos(data);
+        console.log("todolist is  "+JSON.stringify(todos))
+      });
+      // console.log(JSON.stringify(data))})
+    });
+  }, []);
 
-  return (
-    <>
-      {todo.map((task) => {
-        return <TodoComp title= {task.title} desc={task.desc}/>;
-      })}
-    </>
-  );
+  return (<div>{
+    todos.map((todo)=>{
+      return <Todocomp title={todo.task} desc= {todo.details}></Todocomp>
+    })}
+  </div>);
 }
 
-function TodoComp(props) {
-  return<div>
-    <br />
-    {props.title}
-    <br />
-    {props.desc}
-    <br />
-  </div>;
+function Todocomp(props){
+  return <div>
+    {props.title}<br/>
+   {props.desc}<br/><br/>
+  </div>
 }
+
 export default App;
