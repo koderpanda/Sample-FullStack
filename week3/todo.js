@@ -1,12 +1,19 @@
 /*Backend sytem for TODO apps
  */
 const bodyparser = require("body-parser");
+const cors= require("cors")
 const express = require("express");
 const fs = require("fs");
 const app = express();
 const port = 3000;
 
+//Using Cors to avoid cors error
+app.use(cors());
+
+
+//using body parser to parse the json
 app.use(bodyparser.json());
+
 app.get("/todo", (req, res) => {
   fs.readFile("todo.json", "utf8", (err, data) => {
     if (err) throw err;
