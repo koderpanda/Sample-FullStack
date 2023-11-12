@@ -20,6 +20,7 @@ function authenticateAdmin(req, res, next) {
 }
 
 app.post("/admin/signin",  (req, res) => {
+  console.log("trying to signin")
   admin = req.body;
   fs.readFile("admin.json", "utf8", (err, data) => {
     existadmins = JSON.parse(data);
@@ -32,14 +33,14 @@ app.post("/admin/signin",  (req, res) => {
       );
       if (existadmins[indexMatch].pwd == admin.pwd) {
         //create hash
-        admin.token = jwt.sign(admin.uname | admin.pwd, secret);
+        admin.token = jwt.sign(admin.uname | admin.pwd, secret,);
         res.send(JSON.stringify(admin));
       } else {
         res.status(400).send("invalid Uname or Pwd");
       }
     } else {
       res.status(400).send("invalid Uname or Pwd");
-    }
+    } 
   });
 });
 
