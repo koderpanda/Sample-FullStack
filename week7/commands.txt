@@ -1,0 +1,8 @@
+//command to install tsc globally
+npm install -g tsc install
+
+//command to install tsc in a folder
+npm install tsc 
+
+// tsconfig file
+tsc --init
